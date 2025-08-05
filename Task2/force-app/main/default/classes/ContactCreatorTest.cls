@@ -16,12 +16,12 @@ public class ContactCreatorTest {
         Test.stopTest();
         
         // Verify contacts were created
-        List<Contact> createdContacts = [SELECT Id, LastName, AccountId FROM Contact WHERE AccountId = :testAccount.Id];
+        List<Contact> createdContacts = [SELECT Id, LastName, AccountId FROM Contact WHERE AccountId = :testAccount.Id ORDER BY LastName];
         System.assertEquals(3, createdContacts.size(), 'Should have created 3 contacts');
         
         // Verify contact names
         for (Integer i = 0; i < createdContacts.size(); i++) {
-            System.assertEquals('TestContact' + (i + 1), createdContacts[i].LastName, 
+            Assert.areEqual('TestContact' + (i + 1), createdContacts[i].LastName, 
                 'Contact last name should be TestContact' + (i + 1));
         }
     }
@@ -39,10 +39,10 @@ public class ContactCreatorTest {
         String result = ContactCreator.deleteContact(testContact.Id);
         Test.stopTest();
         
-        System.assertEquals('Success', result, 'Should return Success for valid contact deletion');
+        Assert.areEqual('Success', result, 'Should return Success for valid contact deletion');
         
         List<Contact> remainingContacts = [SELECT Id FROM Contact WHERE Id = :testContact.Id];
-        System.assertEquals(0, remainingContacts.size(), 'Contact should be deleted');
+        Assert.areEqual(0, remainingContacts.size(), 'Contact should be deleted');
     }
     
     @isTest
@@ -55,7 +55,7 @@ public class ContactCreatorTest {
         Test.stopTest();
         
         // error
-        System.assertEquals('No contact found', result, 'Should return error message for non-existent contact');
+        Assert.areEqual('No contact found', result, 'Should return error message for non-existent contact');
     }
     
     @isTest
@@ -76,7 +76,7 @@ public class ContactCreatorTest {
         Integer count = ContactCreator.getNumberOfContacts('Test Account');
         Test.stopTest();
         
-        System.assertEquals(5, count, 'Should return correct number of contacts for the account');
+        Assert.areEqual(5, count, 'Should return correct number of contacts for the account');
     }
     
     @isTest
@@ -98,10 +98,10 @@ public class ContactCreatorTest {
         Set<Id> contactIds = ContactCreator.getContactByLastName('Smith');
         Test.stopTest();
         
-        System.assertEquals(3, contactIds.size(), 'Should return 3 contact IDs for lastName Smith');
+        Assert.areEqual(3, contactIds.size(), 'Should return 3 contact IDs for lastName Smith');
         
         for (Id contactId : contactIds) {
-            System.assertNotEquals(null, contactId, 'Contact ID should not be null');
+            Assert.isNotNull(contactId, 'Contact ID should not be null');
         }
     }
     
@@ -111,6 +111,6 @@ public class ContactCreatorTest {
         Set<Id> contactIds = ContactCreator.getContactByLastName('NonExistent');
         Test.stopTest();
         
-        System.assertEquals(0, contactIds.size(), 'Should return empty set for non-existent lastName');
+        Assert.areEqual(0, contactIds.size(), 'Should return empty set for non-existent lastName');
     }
 } 
