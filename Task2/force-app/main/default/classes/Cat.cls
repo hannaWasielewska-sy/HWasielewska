@@ -1,8 +1,9 @@
 public with sharing class Cat {
-    String name;
-    Integer birthYear;
-    String color;
-    String owner;
+    public String name { get; set; }
+    public Integer birthYear { get; set; }
+    public String color { get; set; }
+    public String owner { get; set; }
+
 
     public Cat(String name) {
         this.name = name;

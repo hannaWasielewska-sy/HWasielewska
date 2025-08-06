@@ -1,4 +1,4 @@
-public class SoqlLearning {
+public class SqlLearning {
 
     public static List<Contact> getContactsWithAccountFields() {
         return [
