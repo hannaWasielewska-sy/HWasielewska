@@ -18,7 +18,6 @@ export default class PetAdoptionSupportCmp extends LightningElement {
                 this.pets = result;
             })
             .catch(error => {
-                // handle error
             });
     }
 
