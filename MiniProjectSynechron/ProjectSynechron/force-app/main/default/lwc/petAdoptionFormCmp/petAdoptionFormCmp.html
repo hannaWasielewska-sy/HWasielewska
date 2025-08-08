@@ -1,0 +1,36 @@
+<template>
+    <lightning-card title="Adopt Pet">
+        <div class="slds-p-around_medium">
+            <h3>New Adopter</h3>
+            <lightning-input label="First Name" value={firstName} onchange={handleInputChange} data-field="firstName"></lightning-input>
+            <lightning-input label="Last Name" value={lastName} onchange={handleInputChange} data-field="lastName"></lightning-input>
+            <lightning-input label="Phone" value={phone} onchange={handleInputChange} data-field="phone"></lightning-input>
+            <lightning-input label="Email" value={email} onchange={handleInputChange} data-field="email"></lightning-input>
+            <lightning-input label="Street" value={street} onchange={handleInputChange} data-field="street"></lightning-input>
+            <lightning-input label="Postal Code" value={postalCode} onchange={handleInputChange} data-field="postalCode"></lightning-input>
+            <lightning-input label="City" value={city} onchange={handleInputChange} data-field="city"></lightning-input>
+            <lightning-button label="Adopt" onclick={handleAdoptNew}></lightning-button>
+        </div>
+        <div class="slds-p-around_medium">
+            <h3>Or Search Existing Contact</h3>
+            <lightning-input label="Search" value={searchTerm} onchange={handleSearchInput}></lightning-input>
+            <lightning-button label="Search" onclick={handleSearch}></lightning-button>
+            <template if:true={contacts}>
+                <template for:each={contacts} for:item="contact">
+                    <div key={contact.Id} class="slds-box slds-m-vertical_x-small">
+                        <p>{contact.FirstName} {contact.LastName} ({contact.Email})
+                            <lightning-button label="Select" onclick={handleSelectContact} data-id={contact.Id}></lightning-button>
+                        </p>
+                    </div>
+                </template>
+            </template>
+            <template if:true={selectedContact}>
+                <p>Selected: {selectedContact.FirstName} {selectedContact.LastName} ({selectedContact.Email})</p>
+                <lightning-button label="Adopt with Selected Contact" onclick={handleAdoptExisting}></lightning-button>
+            </template>
+        </div>
+        <div class="slds-p-around_medium">
+            <lightning-button label="Close" onclick={handleClose}></lightning-button>
+        </div>
+    </lightning-card>
+</template> 

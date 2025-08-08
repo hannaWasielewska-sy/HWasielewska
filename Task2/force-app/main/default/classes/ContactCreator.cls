@@ -28,8 +28,12 @@ public class ContactCreator {
     }
 
     public static Set<Id> getContactByLastName(String lastName) {
-        List<Contact> contacts = [SELECT Id, AccountId, FirstName, LastName, Email, Phone FROM Contact WHERE LastName = :lastName];
+        List<Contact> contacts = [SELECT Id, AccountId, FirstName, LastName, Email, Phone 
+        FROM Contact 
+        WHERE LastName = :lastName];
+
         Set<Id> contactIds = new Set<Id>();
+        
         for (Contact c : contacts) {
             contactIds.add(c.Id);
         }

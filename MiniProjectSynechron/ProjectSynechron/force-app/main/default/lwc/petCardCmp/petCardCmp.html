@@ -1,0 +1,20 @@
+<template>
+    <lightning-card>
+        <div class="slds-p-around_medium">
+            <p><strong>Type:</strong> {pet.Type__c}</p>
+            <p><strong>Name:</strong> <a href={petUrl} target="_blank">{pet.Name}</a></p>
+            <p><strong>Birthday:</strong> {pet.Birthday__c}</p>
+            <p><strong>Color:</strong> {pet.Color__c}</p>
+            <p><strong>Description:</strong> {pet.Description__c}</p>
+            <template if:true={pet.Owner__c}>
+                <p><strong>Owner Name:</strong> {pet.OwnerName}</p>
+            </template>
+            <template if:true={pet.For_Adoption__c}>
+                <p style="color: green;"><strong>For Adoption</strong></p>
+            </template>
+            <template if:true={showAdoptButton}>
+                <lightning-button label="Adopt" onclick={handleAdopt}></lightning-button>
+            </template>
+        </div>
+    </lightning-card>
+</template> 

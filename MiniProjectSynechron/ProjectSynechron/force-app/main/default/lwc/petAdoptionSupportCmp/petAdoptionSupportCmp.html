@@ -1,0 +1,19 @@
+<template>
+    <lightning-card title="Pet Adoption Support">
+        <div class="button-group">
+            <lightning-button label="All" onclick={handleAll}></lightning-button>
+            <lightning-button label="Adopted" onclick={handleAdopted}></lightning-button>
+            <lightning-button label="For Adoption" onclick={handleForAdoption}></lightning-button>
+        </div>
+        <template if:true={pets}>
+            <div class="pet-cards">
+                <template for:each={pets} for:item="pet">
+                    <c-pet-card-cmp key={pet.Id} pet={pet} onadopt={handleAdopt}></c-pet-card-cmp>
+                </template>
+            </div>
+        </template>
+        <template if:true={showAdoptionForm}>
+            <c-pet-adoption-form-cmp pet-id={selectedPetId} onclose={handleFormClose} onrefresh={handleFormRefresh}></c-pet-adoption-form-cmp>
+        </template>
+    </lightning-card>
+</template> 

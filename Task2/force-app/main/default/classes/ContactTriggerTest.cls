@@ -24,13 +24,13 @@ public class ContactTriggerTest {
         
         // czy kontakt utworzony?
         List<Contact> createdContacts = [SELECT Id, FirstName, LastName, Email, AccountId FROM Contact WHERE Id = :testContact.Id];
-        System.assertEquals(1, createdContacts.size(), 'Contact should be created successfully');
+        Assert.areEqual(1, createdContacts.size(), 'Contact should be created successfully');
         
         // czy historia utworzona?
         List<Contact_History__c> historyRecords = [SELECT Id, Contact__c, Contact_History_Name__c, Action__c, Timestamp__c 
                                                  FROM Contact_History__c WHERE Contact__c = :testContact.Id];
-        System.assertEquals(1, historyRecords.size(), 'Contact History record should be created for insert');
-        System.assertEquals('Insert', historyRecords[0].Action__c, 'Action should be Insert');
+        Assert.areEqual(1, historyRecords.size(), 'Contact History record should be created for insert');
+        Assert.areEqual('Insert', historyRecords[0].Action__c, 'Action should be Insert');
     }
     
     @isTest
@@ -50,7 +50,7 @@ public class ContactTriggerTest {
         
         // czy kontakt utworzony?
         List<Contact> createdContacts = [SELECT Id, FirstName, LastName, Phone, AccountId FROM Contact WHERE Id = :testContact.Id];
-        System.assertEquals(1, createdContacts.size(), 'Contact should be created successfully with phone only');
+        Assert.areEqual(1, createdContacts.size(), 'Contact should be created successfully with phone only');
     }
     
     @isTest
@@ -68,7 +68,7 @@ public class ContactTriggerTest {
             insert testContact;
             System.assert(false, 'Should have thrown an error for contact without email and phone');
         } catch (DmlException e) {
-            System.assert(e.getMessage().contains('Please provide phone or email value'), 
+            Assert.isTrue(e.getMessage().contains('Please provide phone or email value'), 
                 'Error message should indicate phone or email is required');
         }
         Test.stopTest();
@@ -96,16 +96,16 @@ public class ContactTriggerTest {
         List<Contact_History__c> historyRecords = [SELECT Id, Contact__c, Contact_History_Name__c, Action__c, 
                                                  New_Value__c, Old_Value__c, Edited_Field_Name__c
                                                  FROM Contact_History__c WHERE Contact__c = :testContact.Id];
-        System.assertEquals(2, historyRecords.size(), 'Should create history records for each changed field');
+        Assert.areEqual(2, historyRecords.size(), 'Should create history records for each changed field');
         
         for (Contact_History__c history : historyRecords) {
-            System.assertEquals('Update', history.Action__c, 'Action should be Update');
+            Assert.areEqual('Update', history.Action__c, 'Action should be Update');
             if (history.Edited_Field_Name__c == 'FirstName') {
-                System.assertEquals('Jane', history.New_Value__c, 'New FirstName should be Jane');
-                System.assertEquals('John', history.Old_Value__c, 'Old FirstName should be John');
+                Assert.areEqual('Jane', history.New_Value__c, 'New FirstName should be Jane');
+                Assert.areEqual('John', history.Old_Value__c, 'Old FirstName should be John');
             } else if (history.Edited_Field_Name__c == 'Email') {
-                System.assertEquals('jane.doe@test.com', history.New_Value__c, 'New Email should be jane.doe@test.com');
-                System.assertEquals('john.doe@test.com', history.Old_Value__c, 'Old Email should be john.doe@test.com');
+                Assert.areEqual('jane.doe@test.com', history.New_Value__c, 'New Email should be jane.doe@test.com');
+                Assert.areEqual('john.doe@test.com', history.Old_Value__c, 'Old Email should be john.doe@test.com');
             }
         }
     }
@@ -129,7 +129,7 @@ public class ContactTriggerTest {
             update testContact;
             System.assert(false, 'Should have thrown an error for removing account');
         } catch (DmlException e) {
-            System.assert(e.getMessage().contains('Unable to remove account field value'), 
+            Assert.isTrue(e.getMessage().contains('Unable to remove account field value'), 
                 'Error message should indicate account cannot be removed');
         }
         Test.stopTest();
@@ -153,8 +153,8 @@ public class ContactTriggerTest {
         
         List<Contact_History__c> historyRecords = [SELECT Id, Contact_History_Name__c, Action__c, Timestamp__c 
                                                  FROM Contact_History__c WHERE Contact_History_Name__c LIKE 'Delete%'];
-        System.assertEquals(1, historyRecords.size(), 'Contact History record should be created for delete');
-        System.assertEquals('Delete', historyRecords[0].Action__c, 'Action should be Delete');
+        Assert.areEqual(1, historyRecords.size(), 'Contact History record should be created for delete');
+        Assert.areEqual('Delete', historyRecords[0].Action__c, 'Action should be Delete');
     }
     
     @isTest
@@ -177,9 +177,9 @@ public class ContactTriggerTest {
         Test.stopTest();
         
         List<Contact> createdContacts = [SELECT Id FROM Contact WHERE AccountId = :testAccount.Id];
-        System.assertEquals(200, createdContacts.size(), 'All 200 contacts should be created');
+        Assert.areEqual(200, createdContacts.size(), 'All 200 contacts should be created');
         
         List<Contact_History__c> historyRecords = [SELECT Id FROM Contact_History__c WHERE Action__c = 'Insert'];
-        System.assertEquals(200, historyRecords.size(), 'Contact History records should be created for all contacts');
+        Assert.areEqual(200, historyRecords.size(), 'Contact History records should be created for all contacts');
     }
 } 

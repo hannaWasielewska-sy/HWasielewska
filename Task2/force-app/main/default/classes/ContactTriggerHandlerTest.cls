@@ -39,13 +39,15 @@ public class ContactTriggerHandlerTest {
         );
         
         Test.startTest();
+        Exception e;
         try {
             insert invalidContact;
-            System.assert(false, 'Should have thrown an error for contact without email and phone');
-        } catch (DmlException e) {
-            System.assert(e.getMessage().contains('Please provide phone or email value'), 
-                'Error message should indicate phone or email is required');
+        } catch (Exception exc) {
+            e = exc;
         }
+        Assert.isNotNull(e, 'Exception should be thrown');
+        Assert.isTrue(e.getMessage().contains('Please provide phone or email value'), 
+            'Error message should indicate phone or email is required');
         Test.stopTest();
     }
     
@@ -66,13 +68,15 @@ public class ContactTriggerHandlerTest {
         testContact.AccountId = null;
         
         Test.startTest();
+        Exception e;
         try {
             update testContact;
-            System.assert(false, 'Should have thrown an error for removing account');
-        } catch (DmlException e) {
-            System.assert(e.getMessage().contains('Unable to remove account field value'), 
-                'Error message should indicate account cannot be removed');
+        } catch (Exception exc) {
+            e = exc;
         }
+        Assert.isNotNull(e, 'Exception should be thrown');
+        Assert.isTrue(e.getMessage().contains('Unable to remove account field value'), 
+            'Error message should indicate account cannot be removed');
         Test.stopTest();
     }
     
@@ -94,10 +98,10 @@ public class ContactTriggerHandlerTest {
         
         List<Contact_History__c> historyRecords = [SELECT Id, Contact__c, Contact_History_Name__c, Action__c, Timestamp__c 
                                                  FROM Contact_History__c WHERE Contact__c = :testContact.Id];
-        System.assertEquals(1, historyRecords.size(), 'Contact History record should be created for insert');
-        System.assertEquals('Insert', historyRecords[0].Action__c, 'Action should be Insert');
-        System.assertEquals(testContact.Id, historyRecords[0].Contact__c, 'Contact should be set correctly');
-        System.assert(historyRecords[0].Contact_History_Name__c.startsWith('Insert'), 
+        Assert.areEqual(1, historyRecords.size(), 'Contact History record should be created for insert');
+        Assert.areEqual('Insert', historyRecords[0].Action__c, 'Action should be Insert');
+        Assert.areEqual(testContact.Id, historyRecords[0].Contact__c, 'Contact should be set correctly');
+        Assert.isTrue(historyRecords[0].Contact_History_Name__c.startsWith('Insert'), 
             'Contact History Name should start with Insert');
     }
     
@@ -128,22 +132,22 @@ public class ContactTriggerHandlerTest {
         List<Contact_History__c> historyRecords = [SELECT Id, Contact__c, Contact_History_Name__c, Action__c, 
                                                  New_Value__c, Old_Value__c, Edited_Field_Name__c
                                                  FROM Contact_History__c WHERE Contact__c = :testContact.Id AND Action__c = 'Update'];
-        System.assertEquals(3, historyRecords.size(), 'Should create history records for each changed field');
+        Assert.areEqual(3, historyRecords.size(), 'Should create history records for each changed field');
         
     
         for (Contact_History__c history : historyRecords) {
-            System.assertEquals('Update', history.Action__c, 'Action should be Update');
-            System.assertEquals(testContact.Id, history.Contact__c, 'Contact should be set correctly');
+            Assert.areEqual('Update', history.Action__c, 'Action should be Update');
+            Assert.areEqual(testContact.Id, history.Contact__c, 'Contact should be set correctly');
             
             if (history.Edited_Field_Name__c == 'FirstName') {
-                System.assertEquals('Jane', history.New_Value__c, 'New FirstName should be Jane');
-                System.assertEquals('John', history.Old_Value__c, 'Old FirstName should be John');
+                Assert.areEqual('Jane', history.New_Value__c, 'New FirstName should be Jane');
+                Assert.areEqual('John', history.Old_Value__c, 'Old FirstName should be John');
             } else if (history.Edited_Field_Name__c == 'Email') {
-                System.assertEquals('jane.doe@test.com', history.New_Value__c, 'New Email should be jane.doe@test.com');
-                System.assertEquals('john.doe@test.com', history.Old_Value__c, 'Old Email should be john.doe@test.com');
+                Assert.areEqual('jane.doe@test.com', history.New_Value__c, 'New Email should be jane.doe@test.com');
+                Assert.areEqual('john.doe@test.com', history.Old_Value__c, 'Old Email should be john.doe@test.com');
             } else if (history.Edited_Field_Name__c == 'Phone') {
-                System.assertEquals('0987654321', history.New_Value__c, 'New Phone should be 0987654321');
-                System.assertEquals('1234567890', history.Old_Value__c, 'Old Phone should be 1234567890');
+                Assert.areEqual('0987654321', history.New_Value__c, 'New Phone should be 0987654321');
+                Assert.areEqual('1234567890', history.Old_Value__c, 'Old Phone should be 1234567890');
             }
         }
     }
@@ -167,7 +171,7 @@ public class ContactTriggerHandlerTest {
         Test.stopTest();
         
         List<Contact_History__c> historyRecords = [SELECT Id FROM Contact_History__c WHERE Contact__c = :testContact.Id AND Action__c = 'Update'];
-        System.assertEquals(0, historyRecords.size(), 'No history records should be created for untracked field changes');
+        Assert.areEqual(0, historyRecords.size(), 'No history records should be created for untracked field changes');
     }
     
     @isTest
@@ -189,9 +193,9 @@ public class ContactTriggerHandlerTest {
     
         List<Contact_History__c> historyRecords = [SELECT Id, Contact_History_Name__c, Action__c, Timestamp__c 
                                                  FROM Contact_History__c WHERE Contact_History_Name__c LIKE 'Delete%'];
-        System.assertEquals(1, historyRecords.size(), 'Contact History record should be created for delete');
-        System.assertEquals('Delete', historyRecords[0].Action__c, 'Action should be Delete');
-        System.assert(historyRecords[0].Contact_History_Name__c.startsWith('Delete'), 
+        Assert.areEqual(1, historyRecords.size(), 'Contact History record should be created for delete');
+        Assert.areEqual('Delete', historyRecords[0].Action__c, 'Action should be Delete');
+        Assert.isTrue(historyRecords[0].Contact_History_Name__c.startsWith('Delete'), 
             'Contact History Name should start with Delete');
         
     }
@@ -206,27 +210,26 @@ public class ContactTriggerHandlerTest {
             Email = 'john.doe@test.com',
             AccountId = testAccount.Id
         );
-        insert contact1;
         
         Contact contact2 = new Contact(
             LastName = 'Smith',
             Email = 'smith@test.com',
             AccountId = testAccount.Id
         );
-        insert contact2;
         
         Contact contact3 = new Contact(
             FirstName = 'Jane',
             Email = 'jane@test.com',
             AccountId = testAccount.Id
         );
-        insert contact3;
+        
+        insert new List<Contact>{contact1, contact2, contact3};
         
         List<Contact_History__c> historyRecords = [SELECT Contact_History_Name__c FROM Contact_History__c WHERE Action__c = 'Insert'];
-        System.assertEquals(3, historyRecords.size(), 'Should have 3 history records');
+        Assert.areEqual(3, historyRecords.size(), 'Should have 3 history records');
         
         for (Contact_History__c history : historyRecords) {
-            System.assert(history.Contact_History_Name__c.contains('Insert'), 
+            Assert.isTrue(history.Contact_History_Name__c.contains('Insert'), 
                 'History name should contain Insert');
         }
     }
@@ -250,9 +253,9 @@ public class ContactTriggerHandlerTest {
         Test.stopTest();
         
         List<Contact> createdContacts = [SELECT Id FROM Contact WHERE AccountId = :testAccount.Id];
-        System.assertEquals(100, createdContacts.size(), 'All 100 contacts should be created');
+        Assert.areEqual(100, createdContacts.size(), 'All 100 contacts should be created');
         
         List<Contact_History__c> historyRecords = [SELECT Id FROM Contact_History__c WHERE Action__c = 'Insert'];
-        System.assertEquals(100, historyRecords.size(), 'Contact History records should be created for all contacts');
+        Assert.areEqual(100, historyRecords.size(), 'Contact History records should be created for all contacts');
     }
 } 
