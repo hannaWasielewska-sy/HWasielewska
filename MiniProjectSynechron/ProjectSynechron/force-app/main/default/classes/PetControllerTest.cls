@@ -37,7 +37,11 @@ public class PetControllerTest {
     @isTest
     static void testAdoptPetWithContact() {
         Pet__c pet = [SELECT Id FROM Pet__c WHERE For_Adoption__c = true LIMIT 1];
-        Contact c = new Contact(FirstName='Jane', LastName='Smith');
+        Contact c = new Contact(
+            FirstName='Jane', 
+            LastName='Smith',
+            Email='jane.smith@example.com'
+            );
         insert c;
         Test.startTest();
         PetController.adoptPetWithContact(pet.Id, c.Id);
